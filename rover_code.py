@@ -12,6 +12,9 @@ while True:
     # Possible joystick actions: JOYAXISMOTION-1
     pygame.event.pump()
     # Get count of joysticks
+    button = joystick.get_button (1)        #asking for the buttin
+    if button == 1:
+        break
     joystick = pygame.joystick.Joystick(0) 	#taking the joystick
     joystick.init()  				#initializing the joystick
     elif(joystick.get_axis(0)):
