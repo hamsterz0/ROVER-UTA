@@ -1,4 +1,5 @@
 import pygame
+import math
 from time import sleep
 import serial    
 pygame.init()
@@ -8,6 +9,8 @@ pygame.joystick.init()
 arduino = serial.Serial('/dev/ttyACM0', 9600)
 sleep(2)
  
+X = 0
+Y = 0
 # -------- Main Program Loop -----------
 while True:
     # EVENT PROCESSING STEP
@@ -17,33 +20,35 @@ while True:
     # Get count of joysticks
     joystick = pygame.joystick.Joystick(0)  #taking the joystick
     joystick.init()                 #initializing the joystick
-    #axis0 = joystick.get_axis(0)
-    #axis1 = joystick.get_axis(1)       #asking for the axis
     button = joystick.get_button (1)        #asking for the buttin
     if button == 1:
         break
-    elif(joystick.get_axis(0)):
-        axis = joystick.get_axis(0)
-        a = int(axis*-90) + 90 
-        if(len(str(a)) < 3):
-            b=str(0)+str(a)+'090'+'/'
-            print b         
-        else:
-            b=str(a)+'090'+'/'
-            print b 
-    elif(joystick.get_axis(1)):
-        axis = joystick.get_axis(1)
-        a = int(axis*-90) + 90 
-        if(len(str(a)) < 3):
-            b=str(0)+str(a)+'090'+'/'
-            print b         
-        else:
-            b=str(a)+'090'+'/'
-            print b 
-            
+    Y = joystick.get_axis(0)
+       
+    X = joystick.get_axis(1)
+         
+    V = (32768-abs(X)) * (Y/32768) + Y
+    W = (32768-abs(Y)) * (X/32768) + X
+    R = (V+W)/2 
+    L = (V-W)/2
+    R = int(R*-90) + 90 
+    L = int(L*90) + 90
+    J = [R, L]
+    for i in range(0,2):
+        if(J[i] > 180): J[i] = 180
+        elif(J[i] < 0): J[i] = 0
+    #print str(J)
+    for i in range(0,2):
+        if(len(str(J[i])) < 3 and len(str(J[i])) >= 2):
+            J[i] = "0" + str(J[i])
+        elif(len(str(J[i])) < 2):
+            J[i] = "00" + str(J[i])
+    movement = str(J[1]) + str(J[0]) + "/"
+    print movement
+
     sleep(.3)  
     
-    arduino.write(b)
+    arduino.write(movement)
     
 arduino.close()  
 pygame.quit()
