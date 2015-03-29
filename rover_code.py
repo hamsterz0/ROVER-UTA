@@ -26,6 +26,15 @@ while True:
         else:
             b=str(a)+'090'+'/'
             print b 
+    elif(joystick.get_axis(1)):
+        axis = joystick.get_axis(1)
+        a = int(axis*-90) + 90 
+        if(len(str(a)) < 3):
+            b=str(0)+str(a)+'090'+'/'
+            print b         
+        else:
+            b=str(a)+'090'+'/'
+            print b 
     sleep(.3)  
     
 
