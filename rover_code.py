@@ -6,8 +6,8 @@ pygame.init()
 
 # Initialize the joysticks
 pygame.joystick.init()
-arduino = serial.Serial('/dev/ttyACM0', 9600)
-sleep(2)
+#arduino = serial.Serial('/dev/ttyACM0', 9600)
+#sleep(2)
  
 X = 0
 Y = 0
@@ -48,7 +48,7 @@ while True:
 
     sleep(.3)  
     
-    arduino.write(movement)
+#    arduino.write(movement)
     
-arduino.close()  
+#arduino.close()  
 pygame.quit()

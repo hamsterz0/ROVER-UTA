@@ -14,22 +14,21 @@ import pygame
 import serial
 from time import sleep
 
-arduino = serial.Serial('/dev/ttyACM0',57600)
-sleep(2)
+#arduino = serial.Serial('/dev/ttyACM0',57600)
+#sleep(2)
 
 def main():            
     pygame.init()
     clock = pygame.time.Clock()
     pygame.joystick.init()
-    done = False
 
-    while not done:
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                done=True
+                break
 
         vals = values()
-        arduino.write(vals)
+ #       arduino.write(vals)
         print(vals)        #Un-comment to see values being inputted
         
         clock.tick(2)      #Change the rate here
