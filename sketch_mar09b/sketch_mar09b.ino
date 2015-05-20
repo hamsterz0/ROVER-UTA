@@ -16,14 +16,14 @@ void setup()
 {
   DriveRight.attach(8);
   DriveLeft.attach(9);
-  Serial.begin(9600);
+  Serial.begin(57600);
 
 }
 
 void loop()
 
 {
-  // Read serial input:
+  // Read serial input:1111
   while (Serial.available() > 0) 
   {
     Serial.readBytesUntil('/',input,7);
