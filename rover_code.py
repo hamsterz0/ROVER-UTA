@@ -20,7 +20,7 @@ def arm():
             if event.type == pygame.QUIT:
                 break
 
-        vals = "090090" + values()
+        vals = "a090090" + values()
         if(vals == "0900902"):
             break
  #       arduino.write(vals)
@@ -119,9 +119,9 @@ while True:
             J[i] = "0" + str(J[i])
         elif(len(str(J[i])) < 2):
             J[i] = "00" + str(J[i])
-    movement = str(J[1]) + str(J[0])
+    movement = "d" + str(J[1]) + str(J[0])
 
-    movement+="000-10000000000000000/"
+    movement+="00000000000000000000/"
     print movement
 
 
