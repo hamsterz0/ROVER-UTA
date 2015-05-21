@@ -21,7 +21,7 @@ def arm():
                 break
 
         vals = "a090090" + values()
-        if(vals == "0900902"):
+        if(vals == "a0900902"):
             break
  #       arduino.write(vals)
         print(vals)        #Un-comment to see values being inputted
@@ -36,13 +36,13 @@ def values():
     
     button_4 = joystick.get_button (4)
 
-    if(button_4):
+    if(joystick.get_axis (3) >= 0):
         return str(2)
 
     #Axis   threshhold = +-.3
     axes = joystick.get_numaxes()       
     temp=""
-    for i in range( axes ):
+    for i in range( axes-1 ):
        axis = round(joystick.get_axis( i )*100,2)
        if (axis < 30 and axis > -30): #If axis is in dead zone
            temp+=("0")
@@ -89,14 +89,14 @@ while True:
     joystick.init()                 #initializing the joystick
     button_0 = joystick.get_button (0)
     button_4 = joystick.get_button (4)
-    button_2 = joystick.get_button (2)        #asking for the buttin
+    button_6 = joystick.get_button (6)        #asking for the buttin
     clock = pygame.time.Clock()
     nums = ""
     
-    if button_2:
+    if button_6:
         break
 
-    if button_0:
+    if (joystick.get_axis(3) < 0):
         arm()
 
     Y = joystick.get_axis(0)
