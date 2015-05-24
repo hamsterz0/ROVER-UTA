@@ -7,7 +7,7 @@ pygame.init()
 # Initialize the joysticks
 pygame.joystick.init()
 #Opening the serial port
-arduino = serial.Serial('/dev/ttyUSB0', 57600)
+#arduino = serial.Serial('/dev/ttyUSB0', 57600)
 sleep(2)
  
 X = 0
@@ -23,10 +23,10 @@ def arm():
                 break
 
         #the value() will send "2" if it is breaking out of the loop.
-        vals = camera("a090090") + values()
-        if(vals == camera("a090090") + "2"):
+        vals = camera("a090090-") + values()
+        if(vals == camera("a090090-") + "2"):
             break
-        arduino.write(vals)
+        #arduino.write(vals)
         #Un-comment to see values being inputted
         print(vals)        
         #Change the rate here  
@@ -48,17 +48,16 @@ def values():
            temp+=("0")
        #Check rover controller if up is negative.
        if (axis >= 30):               
-           temp+=("1")
+           temp+=("2")
        if (axis <= -30):
-           temp+=("-1")
+           temp+=("1")
     nums+=temp
 
     #Buttons
     buttons = joystick.get_numbuttons()
     temp1 = ""
-    kill_switch = 0;
     for i in range( buttons ):
-        if(joystick.get_button(0)):
+        if(joystick.get_button(7)):
             return str(2)
             break
         button = joystick.get_button( i )
@@ -68,6 +67,19 @@ def values():
 
     #Hats
     # left,right,down,up
+
+    nums+="/"
+    return nums
+
+def camera(movement):
+    cam = 0
+    if(joystick.get_axis(3) < -0.5):
+        movement+= "1"
+    if(joystick.get_axis(3) >= -0.5 and joystick.get_axis(3) <= 0.5):
+        movement+= "2"
+    if(joystick.get_axis(3) > 0.5):
+        movement+= "3"
+
     hat_s = ["0","0","0","0"]        
     hat = joystick.get_hat( 0 )
     if (hat[0] == -1):
@@ -79,19 +91,7 @@ def values():
     if (hat[1] == 1):
         hat_s[3] = "1"
     hats = hat_s[0]+hat_s[1]+hat_s[2]+hat_s[3]
-    nums+=hats
-
-    nums+="/"
-    return nums
-
-def camera(movement):
-    cam = 0
-    if(joystick.get_axis(3) > -0.1 and joystick.get_axis(3) < 0.1):
-        movement+= "2"
-    if(joystick.get_axis(3) < -0.9):
-        movement+= "1"
-    if(joystick.get_axis(3) > 0.9):
-        movement+= "3"
+    movement+=hats + "-"
 
     return movement
 
@@ -107,15 +107,12 @@ while True:
     joystick.init()  
     #initializing some buttons.               
     button_0 = joystick.get_button (0)
-    button_7 = joystick.get_button (7)
+    button_8 = joystick.get_button (8)
     button_6 = joystick.get_button (6)        
     clock = pygame.time.Clock()
     nums = ""
 
-    if button_6:
-        break
-
-    if (button_7):
+    if (button_6):
         arm()
 
     #Driver code, works by default
@@ -138,11 +135,11 @@ while True:
             J[i] = "0" + str(J[i])
         elif(len(str(J[i])) < 2):
             J[i] = "00" + str(J[i])
-    movement = "d" + str(J[1]) + str(J[0])
+    movement = "d" + str(J[1]) + str(J[0]) + "-"
 
     movement = camera(movement)
 
-    movement+="00000000000000000000/"
+    movement+="000000000000000/"
     print movement
 
 
