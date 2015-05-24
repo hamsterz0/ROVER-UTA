@@ -6,13 +6,15 @@ pygame.init()
 
 # Initialize the joysticks
 pygame.joystick.init()
-#arduino = serial.Serial('/dev/ttyUSB0', 57600)
+#Opening the serial port
+arduino = serial.Serial('/dev/ttyUSB0', 57600)
 sleep(2)
  
 X = 0
 Y = 0
 # -------- Main Program Loop -----------
 
+#Code for the arm
 def arm():            
     clock = pygame.time.Clock()
     while True:
@@ -20,13 +22,15 @@ def arm():
             if event.type == pygame.QUIT:
                 break
 
+        #the value() will send "2" if it is breaking out of the loop.
         vals = camera("a090090") + values()
         if(vals == camera("a090090") + "2"):
             break
- #       arduino.write(vals)
-        print(vals)        #Un-comment to see values being inputted
-        
-        clock.tick(2)      #Change the rate here  
+        arduino.write(vals)
+        #Un-comment to see values being inputted
+        print(vals)        
+        #Change the rate here  
+        clock.tick(2)      
 
 
 
@@ -34,16 +38,16 @@ def values():
     joystick = pygame.joystick.Joystick(0)
     nums = ""
 
-    
-
     #Axis   threshhold = +-.3
     axes = joystick.get_numaxes()       
     temp=""
     for i in range( axes-1 ):
        axis = round(joystick.get_axis( i )*100,2)
-       if (axis < 30 and axis > -30): #If axis is in dead zone
+       #If axis is in dead zone
+       if (axis < 30 and axis > -30):
            temp+=("0")
-       if (axis >= 30):               #Check rover controller if up is negative.
+       #Check rover controller if up is negative.
+       if (axis >= 30):               
            temp+=("1")
        if (axis <= -30):
            temp+=("-1")
@@ -54,7 +58,7 @@ def values():
     temp1 = ""
     kill_switch = 0;
     for i in range( buttons ):
-        if(joystick.get_button(7) and joystick.get_button(0)):
+        if(joystick.get_button(0)):
             return str(2)
             break
         button = joystick.get_button( i )
@@ -63,7 +67,8 @@ def values():
     nums+=temp1
 
     #Hats
-    hat_s = ["0","0","0","0"]        # left,right,down,up
+    # left,right,down,up
+    hat_s = ["0","0","0","0"]        
     hat = joystick.get_hat( 0 )
     if (hat[0] == -1):
         hat_s[0] = "1"
@@ -96,20 +101,24 @@ while True:
     # Possible joystick actions: JOYAXISMOTION-1
     pygame.event.pump()
     # Get count of joysticks
-    joystick = pygame.joystick.Joystick(0)  #taking the joystick
-    joystick.init()                 #initializing the joystick
+    #taking the joystick
+    joystick = pygame.joystick.Joystick(0)  
+    #initializing the joystick
+    joystick.init()  
+    #initializing some buttons.               
     button_0 = joystick.get_button (0)
     button_7 = joystick.get_button (7)
-    button_6 = joystick.get_button (6)        #asking for the buttin
+    button_6 = joystick.get_button (6)        
     clock = pygame.time.Clock()
     nums = ""
-    
+
     if button_6:
         break
 
     if (button_7):
         arm()
 
+    #Driver code, works by default
     Y = joystick.get_axis(0)
        
     X = joystick.get_axis(1)
@@ -124,7 +133,6 @@ while True:
     for i in range(0,2):
         if(J[i] > 180): J[i] = 180
         elif(J[i] < 0): J[i] = 0
-    #print str(J)
     for i in range(0,2):
         if(len(str(J[i])) < 3 and len(str(J[i])) >= 2):
             J[i] = "0" + str(J[i])
